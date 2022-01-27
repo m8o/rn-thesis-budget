@@ -1,68 +1,66 @@
 import React, { useState } from "react";
-import { Button, FlatList, StyleSheet, View } from "react-native";
-import GoalInput from "./components/GoalInput";
-import GoalItem from "./components/GoalItem";
+import { Alert, StyleSheet, View } from "react-native";
+import Header from "./components/Header";
+import GameOverScreen from "./screens/GameOverScreen";
+import GameScreen from "./screens/GameScreen";
+import StartGameScreen from "./screens/StartGameScreen";
+import * as Font from "expo-font";
+import AppLoading from "expo-app-loading";
+
+const fetchFonts = () => {
+	return Font.loadAsync({
+		"open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
+		"open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
+	});
+};
 
 export default function App() {
-	const { screen } = styles;
-	const [courseGoals, setCourseGoals] = useState([]);
-	const [isAddMode, setIsAddMode] = useState(false);
-
-	const onDelete = (goalId) => {
-		setCourseGoals((currentGoals) => {
-			return currentGoals.filter((goal) => goal.id !== goalId);
-		});
+	const [userNumber, setUserNumber] = useState();
+	const [guessRounds, setGuessRounds] = useState();
+	const [dataLoaded, setDataLoaded] = useState(false);
+	if (!dataLoaded) {
+		return (
+			<AppLoading
+				startAsync={fetchFonts}
+				onFinish={() => {
+					setDataLoaded(true);
+				}}
+				onError={(err) => Alert.alert("error", err, "okay")}
+			/>
+		);
+	}
+	const startGameHandler = (selectedNumber) => {
+		setUserNumber(selectedNumber);
+		setGuessRounds(0);
 	};
+	const gameOverHandler = (numOfRounds) => {
+		setGuessRounds(numOfRounds);
+	};
+	const configureNewGameHandler = () => {
+		setGuessRounds(0);
+		setUserNumber(null);
+	};
+	let content = <StartGameScreen onStartGame={startGameHandler} />;
+	if (userNumber && guessRounds <= 0) {
+		content = (
+			<GameScreen userChoice={userNumber} onGameOver={gameOverHandler} />
+		);
+	} else if (guessRounds > 0) {
+		content = (
+			<GameOverScreen
+				onRestart={configureNewGameHandler}
+				roundsNumber={guessRounds}
+				userNumber={userNumber}
+			/>
+		);
+	}
+
 	return (
-		<View style={screen}>
-			<Button
-				title="Add new goal"
-				onPress={() => {
-					setIsAddMode(true);
-				}}
-			/>
-			<GoalInput
-				onAddModeClose={() => {
-					setIsAddMode(false);
-				}}
-				onAddGoal={setCourseGoals}
-				visible={isAddMode}
-			/>
-			<View>
-				<FlatList
-					keyExtractor={(item) => item.id}
-					data={courseGoals}
-					renderItem={(itemData) => (
-						<GoalItem
-							onDelete={onDelete.bind(this, itemData.item.id)}
-							value={itemData.item.value}
-						/>
-					)}
-				/>
-			</View>
+		<View style={{ flex: 1 }}>
+			<Header title={"Guess a number"} />
+			{content}
 		</View>
 	);
 }
 
-const styles = StyleSheet.create({
-	screen: { padding: 12 },
-	inputContainer: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-	},
-	input: {
-		borderColor: "black",
-		borderWidth: 1,
-		padding: 10,
-		flexGrow: 1,
-		marginRight: 4,
-	},
-	listItem: {
-		padding: 10,
-		backgroundColor: "#ccc",
-		borderColor: "black",
-		borderWidth: 1,
-		marginTop: 4,
-	},
-});
+const styles = StyleSheet.create({});
