@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Alert, StyleSheet, View } from "react-native";
+import { Alert, SafeAreaView, StatusBar, StyleSheet, View } from "react-native";
 import Header from "./components/Header";
 import GameOverScreen from "./screens/GameOverScreen";
 import GameScreen from "./screens/GameScreen";
@@ -56,10 +56,10 @@ export default function App() {
 	}
 
 	return (
-		<View style={{ flex: 1 }}>
+		<SafeAreaView style={{ flex: 1 }}>
 			<Header title={"Guess a number"} />
 			{content}
-		</View>
+		</SafeAreaView>
 	);
 }
 

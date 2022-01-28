@@ -3,6 +3,7 @@ import {
 	Button,
 	Image,
 	ImageBackground,
+	Platform,
 	StyleSheet,
 	Text,
 	View,
@@ -24,11 +25,7 @@ const GameOverScreen = (props) => {
 				<NumberContainer>{props.roundsNumber}</NumberContainer>
 				<BodyText>Number was:</BodyText>
 				<NumberContainer>{props.userNumber}</NumberContainer>
-				<CustomButton
-					title="NEW GAME"
-					color={"green"}
-					onPress={props.onRestart}
-				/>
+				<CustomButton title="NEW GAME" onPress={props.onRestart} />
 			</ImageBackground>
 		</View>
 	);
