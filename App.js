@@ -1,66 +1,41 @@
-import React, { useState } from "react";
-import { Alert, SafeAreaView, StatusBar, StyleSheet, View } from "react-native";
-import Header from "./components/Header";
-import GameOverScreen from "./screens/GameOverScreen";
-import GameScreen from "./screens/GameScreen";
-import StartGameScreen from "./screens/StartGameScreen";
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, Text, View } from "react-native";
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
+import { useState } from "react";
+import MealsNavigation from "./navigation/MealsNavigation";
 
 const fetchFonts = () => {
-	return Font.loadAsync({
+	Font.loadAsync({
 		"open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
 		"open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
 	});
 };
 
 export default function App() {
-	const [userNumber, setUserNumber] = useState();
-	const [guessRounds, setGuessRounds] = useState();
-	const [dataLoaded, setDataLoaded] = useState(false);
-	if (!dataLoaded) {
+	const [fontLoaded, setFontLoaded] = useState(false);
+	if (!fontLoaded) {
 		return (
 			<AppLoading
 				startAsync={fetchFonts}
 				onFinish={() => {
-					setDataLoaded(true);
+					setFontLoaded(true);
 				}}
-				onError={(err) => Alert.alert("error", err, "okay")}
+				onError={(error) => {
+					console.log(error);
+				}}
 			/>
 		);
+	} else {
+		return <MealsNavigation />;
 	}
-	const startGameHandler = (selectedNumber) => {
-		setUserNumber(selectedNumber);
-		setGuessRounds(0);
-	};
-	const gameOverHandler = (numOfRounds) => {
-		setGuessRounds(numOfRounds);
-	};
-	const configureNewGameHandler = () => {
-		setGuessRounds(0);
-		setUserNumber(null);
-	};
-	let content = <StartGameScreen onStartGame={startGameHandler} />;
-	if (userNumber && guessRounds <= 0) {
-		content = (
-			<GameScreen userChoice={userNumber} onGameOver={gameOverHandler} />
-		);
-	} else if (guessRounds > 0) {
-		content = (
-			<GameOverScreen
-				onRestart={configureNewGameHandler}
-				roundsNumber={guessRounds}
-				userNumber={userNumber}
-			/>
-		);
-	}
-
-	return (
-		<SafeAreaView style={{ flex: 1 }}>
-			<Header title={"Guess a number"} />
-			{content}
-		</SafeAreaView>
-	);
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		backgroundColor: "#fff",
+		alignItems: "center",
+		justifyContent: "center",
+	},
+});
