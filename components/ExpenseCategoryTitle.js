@@ -1,28 +1,20 @@
 import React from "react";
-import {
-	Platform,
-	StyleSheet,
-	Text,
-	TouchableNativeFeedback,
-	TouchableOpacity,
-	View,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Colors from "../Constants/Colors";
 
-const CategoryGridTitle = (props) => {
-	let TouchableCmp = TouchableOpacity;
-	if (Platform.OS === "android" && Platform.Version >= 21) {
-		TouchableCmp = TouchableNativeFeedback;
-	}
+const ExpenseCategoryTitle = (props) => {
 	return (
 		<View style={styles.gridItem}>
-			<TouchableCmp style={styles.gridItemTouchable} onPress={props.onSelect}>
+			<TouchableOpacity
+				style={styles.gridItemTouchable}
+				onPress={props.onSelect}
+			>
 				<View style={{ ...styles.container, backgroundColor: props.color }}>
 					<Text style={styles.title} numberOfLines={2}>
 						{props.title}
 					</Text>
 				</View>
-			</TouchableCmp>
+			</TouchableOpacity>
 		</View>
 	);
 };
@@ -49,4 +41,4 @@ const styles = StyleSheet.create({
 		textAlign: "right",
 	},
 });
-export default CategoryGridTitle;
+export default ExpenseCategoryTitle;
